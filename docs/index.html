@@ -40,6 +40,26 @@
   .verdict { border-left:4px solid var(--accent); padding:8px 14px; background:var(--soft); border-radius:0 8px 8px 0; }
   pre { background:var(--soft); padding:12px 14px; border-radius:8px; overflow-x:auto; font-size:.85rem; line-height:1.45; }
   footer { margin-top:56px; padding:24px 16px 48px; border-top:1px solid var(--line); color:var(--muted); font-size:.9rem; }
+  video { width:100%; height:auto; border:1px solid var(--line); border-radius:8px; background:#000; }
+  .panel { border:1px solid var(--line); border-radius:10px; padding:16px; margin:18px 0; background:var(--bg); }
+  .panel h3 { margin-top:0; }
+  .seg { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 14px; }
+  .seg button { font:14px/1.3 system-ui, sans-serif; padding:6px 12px; border:1px solid var(--line); background:var(--soft); color:var(--ink); border-radius:6px; cursor:pointer; min-height:36px; }
+  .seg button[aria-pressed="true"] { background:var(--blue); border-color:var(--blue); color:#fff; }
+  .bars { font:14px/1.4 system-ui, sans-serif; }
+  .bar { display:grid; grid-template-columns:minmax(120px, 38%) 1fr; gap:10px; align-items:center; margin:6px 0; }
+  .bar .track { background:var(--soft); border-radius:4px; height:24px; position:relative; }
+  .bar .fill { height:100%; border-radius:4px; background:#8a8984; transition:width .35s ease; }
+  .bar.ours .fill { background:var(--blue); }
+  .bar .val { position:absolute; right:6px; top:2px; font-weight:600; }
+  .facts { font:13px/1.4 system-ui, sans-serif; width:100%; }
+  .facts td, .facts th { text-align:left; white-space:nowrap; }
+  .kept { color:#1f7a3a; font-weight:600; }
+  .dropped { color:var(--muted); }
+  .stat { font:600 15px/1.5 system-ui, sans-serif; }
+  .note { color:var(--muted); font-size:.9rem; }
+  @media (prefers-color-scheme: dark) { .kept { color:#7fd18f; } }
+  @media (max-width: 480px) { .facts td:nth-child(2), .facts th:nth-child(2) { display:none; } }
 </style>
 </head>
 <body>
@@ -50,12 +70,21 @@
     <a href="https://github.com/Shashvath11/Soft-Temporal-Kernel-Graph-Retrieval">Code on GitHub</a>
     <a href="assets/paper_ieee.pdf">Paper (IEEE, PDF)</a>
     <a href="assets/paper_extended.pdf">Extended paper (PDF)</a>
+    <a href="#video">Video</a>
     <a href="#results">Results</a>
+    <a href="#explore">Explore</a>
     <a href="#proof">Proof of implementation</a>
   </nav>
 </header>
 
 <main>
+<h2 id="video">Project video</h2>
+<video controls preload="metadata" poster="assets/demo_video_poster.png">
+  <source src="assets/demo_video.mp4" type="video/mp4">
+  Your browser cannot play this video. <a href="assets/demo_video.mp4">Download it (MP4, 2.5 MB)</a>.
+</video>
+<p class="note">83-second walkthrough: problem, method, architecture, a replay of the recorded output of <code>scripts/demo_compare.py</code> on development question base-6, and the main results. The demo part is typed out from the saved output file; it is a replay, not a live screen capture.</p>
+
 <h2>Overview</h2>
 <p>Questions about company results always name a period: <em>"What was EOG Resources' free cash flow in 2021-Q4?"</em> Temporal graph retrieval answers them by storing every extracted fact with a timestamp and keeping only the facts dated inside the asked period. This project asks whether that strict 0/1 rule can be replaced by a soft, question-aware time weight, and tests the idea under a protocol fixed before the test set was run.</p>
 
@@ -102,6 +131,42 @@
 </table>
 </div>
 <p class="verdict"><strong>The main claim is not supported:</strong> the soft kernel ties with the baseline on held-out questions. It changes the retrieved evidence on 110 of 116 answerable questions, helping multi-period questions and hurting single-period, multi-company ones, and the two effects cancel out. Question-aware decay was no better than question-independent decay.</p>
+
+<h2 id="explore">Explore the results</h2>
+<p class="note">All numbers below are embedded from the project's result files (test set: 152 questions; development set: 37). Nothing is computed from new runs.</p>
+
+<div class="panel" id="p-methods">
+  <h3>Compare the methods</h3>
+  <div class="seg" role="group" aria-label="Question group">
+    <button data-k="all" aria-pressed="true">All questions (152)</button>
+    <button data-k="ans" aria-pressed="false">Answerable (116)</button>
+    <button data-k="unans" aria-pressed="false">Unanswerable (36)</button>
+  </div>
+  <div class="bars" id="method-bars"></div>
+  <p class="note" id="method-note"></p>
+</div>
+
+<div class="panel" id="p-lambda">
+  <h3>How strict should the time weight be? (λ)</h3>
+  <p>Pick one of the λ values tested on the development set. The table shows how each candidate fact of the demo question (asked period 2021-Q4) is weighted by κ = exp(−λ·d) and whether it passes the 0.05 threshold.</p>
+  <div class="seg" role="group" aria-label="Lambda">
+    <button data-l="0.25">0.25</button><button data-l="0.5">0.5</button><button data-l="1" aria-pressed="true">1 (chosen)</button>
+    <button data-l="2">2</button><button data-l="4">4</button><button data-l="1000">1000 (≈ hard filter)</button>
+  </div>
+  <p class="stat" id="lambda-stat"></p>
+  <div class="tablewrap"><table class="facts" id="lambda-table"></table></div>
+  <p class="note">Distances d follow the time tree used in the code (0 inside the period, 2 to a neighbouring quarter of the same year, 4 across a year boundary, 3 for a full-year fact of another year). Dev Correct values come from the λ sweep; fact weights are computed from the formula.</p>
+</div>
+
+<div class="panel" id="p-noise">
+  <h3>What happens when stored dates are wrong?</h3>
+  <div class="seg" role="group" aria-label="Noise rate">
+    <button data-n="0" aria-pressed="true">0% shifted</button><button data-n="1">10%</button><button data-n="2">20%</button><button data-n="3">30%</button>
+  </div>
+  <div class="bars" id="noise-bars"></div>
+  <p class="stat" id="noise-stat"></p>
+  <p class="note">Share of stored timestamps moved by one quarter (deterministic hash, identical for both methods). Δ is the paired-bootstrap difference (1,000 resamples) with its 95% interval.</p>
+</div>
 
 <h3>Robustness to wrong timestamps</h3>
 <figure>
@@ -171,5 +236,93 @@ python scripts/run_ectqa.py --working_dir graph_subset --questions ect-qa/subset
 <footer>
   Built on TG-RAG (Han et al., arXiv:2510.13590) and the ECT-QA benchmark, which are third-party works under their own terms. Code in this repository: MIT License.
 </footer>
+<script>
+// Data embedded from results_test/overall.csv, paper/figures/lambda_sweep_dev.csv,
+// paper/figures/robustness_test.csv and docs/demo_output_base-6.txt (no new computation).
+(function () {
+  var METHODS = [
+    {name: "TG-RAG, reproduced (hard filter)", all: 0.5993, ans: 0.5396, unans: 0.7917},
+    {name: "Naive RAG", all: 0.5484, ans: 0.4255, unans: 0.9444},
+    {name: "Soft kernel, λ = 1 (B1, ours)", all: 0.6034, ans: 0.5536, unans: 0.7639, ours: true},
+    {name: "Soft kernel + walk (B12)", all: 0.6048, ans: 0.5554, unans: 0.7639},
+    {name: "Question-independent decay (B1QI)", all: 0.6049, ans: 0.5470, unans: 0.7917},
+    {name: "Hybrid seeding, hard filter (C)", all: 0.5612, ans: 0.4682, unans: 0.8611},
+    {name: "B12 + hybrid seeding (BC)", all: 0.6257, ans: 0.5224, unans: 0.9583}
+  ];
+  var NOTES = {
+    all: "Soft kernel vs TG-RAG: +0.004, 95% CI [−0.049, +0.059]. Not significant.",
+    ans: "Soft kernel vs TG-RAG: +0.014, 95% CI [−0.049, +0.083]. Not significant. Naive RAG is significantly worse here (−0.114).",
+    unans: "Naive RAG and BC lead here mainly because they refuse more often; that is why both groups are always reported."
+  };
+  var SWEEP = {"0.25": 0.5186, "0.5": 0.4818, "1": 0.5216, "2": 0.4815, "4": 0.4563, "1000": 0.4473};
+  var FACTS = [ // stored date, similarity, tree distance to 2021-Q4 (null = unparseable)
+    ["2022-Q1", 0.800, 4], ["2021-Q3", 0.799, 2], ["2020-Q2", 0.791, 4], ["2023-Q3", 0.789, 4],
+    ["2021-Q1", 0.788, 2], ["2021-Q2", 0.783, 2], ["2020-Q2", 0.783, 4], ["2022-Q3", 0.779, 4],
+    ["2020", 0.778, 3], ["2023", 0.773, 3], ["2020-Q3", 0.773, 4], ["YEAR-TO-DATE", 0.772, null]
+  ];
+  var NOISE = [
+    {r: "0%", t: 0.5993, b: 0.6034, d: "+0.004", ci: "[−0.049, +0.059]", p: "0.445"},
+    {r: "10%", t: 0.5996, b: 0.5819, d: "−0.018", ci: "[−0.081, +0.043]", p: "0.719"},
+    {r: "20%", t: 0.5751, b: 0.6061, d: "+0.031", ci: "[−0.027, +0.096]", p: "0.155"},
+    {r: "30%", t: 0.5660, b: 0.6273, d: "+0.061", ci: "[+0.005, +0.120]", p: "0.019"}
+  ];
+
+  function bars(el, rows) { // rows: [label, value, isOurs]
+    el.innerHTML = rows.map(function (r) {
+      return '<div class="bar' + (r[2] ? ' ours' : '') + '"><span>' + r[0] + '</span>' +
+             '<div class="track"><div class="fill" style="width:' + (r[1] * 100).toFixed(1) + '%"></div>' +
+             '<span class="val">' + r[1].toFixed(3) + '</span></div></div>';
+    }).join("");
+  }
+  function press(group, btn) {
+    group.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+  }
+
+  // 1. methods
+  var mGroup = document.querySelector("#p-methods .seg");
+  function showMethods(k) {
+    bars(document.getElementById("method-bars"), METHODS.map(function (m) { return [m.name, m[k], m.ours]; }));
+    document.getElementById("method-note").textContent = NOTES[k];
+  }
+  mGroup.addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return; press(mGroup, b); showMethods(b.dataset.k);
+  });
+  showMethods("all");
+
+  // 2. lambda explorer
+  var lGroup = document.querySelector("#p-lambda .seg");
+  function showLambda(l) {
+    var lam = parseFloat(l), kept = 0;
+    var rows = FACTS.map(function (f) {
+      var k = f[2] === null ? 0 : Math.exp(-lam * f[2]);
+      var ok = k >= 0.05; if (ok) kept++;
+      return "<tr><td>" + f[0] + "</td><td>" + f[1].toFixed(3) + "</td><td>" + (f[2] === null ? "–" : f[2]) +
+             "</td><td>" + k.toFixed(4) + "</td><td class='" + (ok ? "kept'>kept" : "dropped'>dropped") + "</td></tr>";
+    });
+    document.getElementById("lambda-table").innerHTML =
+      "<thead><tr><th>Stored date</th><th>Similarity</th><th>d</th><th>κ</th><th>Decision</th></tr></thead><tbody>" + rows.join("") + "</tbody>";
+    document.getElementById("lambda-stat").textContent =
+      "λ = " + l + ": " + kept + " of these 12 facts kept · development-set Correct " + SWEEP[l].toFixed(3) +
+      " (TG-RAG reproduced: 0.445)";
+  }
+  lGroup.addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return; press(lGroup, b); showLambda(b.dataset.l);
+  });
+  showLambda("1");
+
+  // 3. noise explorer
+  var nGroup = document.querySelector("#p-noise .seg");
+  function showNoise(i) {
+    var n = NOISE[i];
+    bars(document.getElementById("noise-bars"), [["TG-RAG (hard filter)", n.t, false], ["Soft kernel, λ = 1 (ours)", n.b, true]]);
+    document.getElementById("noise-stat").textContent = n.r + " shifted · Δ = " + n.d + " " + n.ci + ", p = " + n.p +
+      (i === 3 ? " · significant on its own, but not after correcting for six robustness tests" : " · not significant");
+  }
+  nGroup.addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return; press(nGroup, b); showNoise(parseInt(b.dataset.n, 10));
+  });
+  showNoise(0);
+})();
+</script>
 </body>
 </html>

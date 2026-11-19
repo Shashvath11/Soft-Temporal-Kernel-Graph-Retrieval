@@ -2,7 +2,7 @@
 
 A soft, question-aware time weight for temporal graph retrieval, evaluated on earnings-call question answering under a pre-registered protocol.
 
-**Project website:** https://shashvath11.github.io/Soft-Temporal-Kernel-Graph-Retrieval/  ·  **Paper:** [`paper/`](paper/)  ·  **Author:** Shashvath M (M.Tech, Amrita School of Computing, Coimbatore)
+**Project website:** https://shashvath11.github.io/Soft-Temporal-Kernel-Graph-Retrieval/ (with an 83-second project video and interactive result explorers)  ·  **Video:** [`docs/assets/demo_video.mp4`](docs/assets/demo_video.mp4)  ·  **Paper:** [`paper/`](paper/)  ·  **Author:** Shashvath M (M.Tech, Amrita School of Computing, Coimbatore)
 
 ---
 

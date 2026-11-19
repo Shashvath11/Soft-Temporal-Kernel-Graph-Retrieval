@@ -1,0 +1,5 @@
+reasoning_type,n,tgrag_correct,B1_correct
+comparison,46,0.3786,0.4033
+enumeration,70,0.6453,0.6524
+unanswerable|out-of-scope,32,0.7812,0.7812
+unanswerable|nonfact,4,0.8750,0.6250

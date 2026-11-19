@@ -44,3 +44,5 @@ rank-bm25         # BM25 keyword search (Module C)
 pytest            # runs the tests in src/softtime/tests
 matplotlib==3.11.2  # paper figures (scripts/make_figures.py)
 python-pptx==1.0.2  # review slide decks (scripts/make_review2_deck.py)
+imageio==2.38.2  # website demo video (scripts/make_demo_video.py)
+imageio-ffmpeg==0.8.1  # bundled ffmpeg encoder for the video
