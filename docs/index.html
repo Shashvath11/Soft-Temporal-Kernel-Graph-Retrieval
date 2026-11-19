@@ -140,6 +140,25 @@ Facts kept as seeds: TG-RAG 0 of 60, soft kernel 13 of 60
 Answer, TG-RAG:      three invented figures (judge Correct 0.00)
 Answer, soft kernel: "2021-Q4: $2 billion", other quarters not available (judge Correct 0.33)</pre>
 
+<h2 id="progress">Project progress</h2>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>Stage</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>Data subset and dev/test split (6 companies, 37/152 questions)</td><td>done</td></tr>
+    <tr><td>Temporal knowledge graph built (96 transcripts)</td><td>done</td></tr>
+    <tr><td>Baseline reproduced and verified (36/37 same evidence)</td><td>done</td></tr>
+    <tr><td>Soft kernel, kernel in the walk, question-independent ablation, hybrid seeding, noise protocol</td><td>done</td></tr>
+    <tr><td>Evaluation pipeline (judge, ROUGE-L, F1, paired bootstrap)</td><td>done</td></tr>
+    <tr><td>Development experiments and λ selection</td><td>done</td></tr>
+    <tr><td>Pre-registered test runs (13 × 152 answers) and analysis</td><td>done</td></tr>
+    <tr><td>Figures, tables, paper drafts and thesis</td><td>done</td></tr>
+    <tr><td>Human check of 50 judged answers and 100 stored timestamps</td><td>sheets prepared; verdicts pending</td></tr>
+    <tr><td>Journal submission</td><td>manuscript complete; not yet submitted</td></tr>
+  </tbody>
+</table>
+</div>
+
 <h2>Reproduce</h2>
 <pre>git clone https://github.com/Shashvath11/Soft-Temporal-Kernel-Graph-Retrieval.git
 git clone https://github.com/hanjiale/Temporal-GraphRAG.git third_party/TG-RAG
