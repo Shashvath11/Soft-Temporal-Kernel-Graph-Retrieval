@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soft Temporal Kernels for Graph Retrieval</title>
+<meta name="description" content="A soft, question-aware time weight for temporal graph retrieval, evaluated on earnings-call question answering under a pre-registered protocol.">
+<style>
+  :root { --ink:#1b1b1b; --muted:#5a5a5a; --line:#e3e3e0; --bg:#ffffff; --soft:#f5f6f8; --accent:#a4123f; --blue:#2a78d6; --ours:#e6f0fb; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink:#ececec; --muted:#a9a9a9; --line:#333; --bg:#141414; --soft:#1e1f22; --accent:#e0577d; --blue:#6aa5ec; --ours:#1d2a3a; }
+    img.fig { background:#fff; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font:17px/1.6 Georgia, "Times New Roman", serif; color:var(--ink); background:var(--bg); }
+  header, main, footer { max-width:920px; margin:0 auto; padding:0 16px; }
+  header { padding-top:48px; padding-bottom:24px; border-bottom:1px solid var(--line); }
+  h1 { font-size:2rem; line-height:1.25; margin:0 0 12px; }
+  h2 { font-size:1.45rem; margin:48px 0 12px; }
+  h3 { font-size:1.1rem; margin:28px 0 8px; }
+  p, li { max-width:72ch; }
+  .sub { color:var(--muted); margin:0 0 16px; }
+  nav a, .btn { display:inline-block; margin:4px 8px 4px 0; padding:6px 12px; border:1px solid var(--line); border-radius:6px; color:var(--ink); text-decoration:none; font:15px/1.4 system-ui, sans-serif; }
+  nav a:hover, .btn:hover { border-color:var(--blue); }
+  a { color:var(--blue); }
+  .eq { background:var(--soft); border-radius:8px; padding:14px 16px; font-family:"Cambria Math", "Times New Roman", serif; font-size:1.1rem; overflow-x:auto; }
+  figure { margin:20px 0; }
+  img.fig { width:100%; height:auto; border:1px solid var(--line); border-radius:6px; }
+  figcaption { color:var(--muted); font-size:.92rem; margin-top:6px; }
+  .tablewrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font:15px/1.45 system-ui, sans-serif; }
+  th, td { padding:7px 10px; border-bottom:1px solid var(--line); text-align:right; white-space:nowrap; }
+  th:first-child, td:first-child { text-align:left; white-space:normal; }
+  th { background:var(--soft); }
+  tr.ours td { background:var(--ours); font-weight:600; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin:16px 0; }
+  .card { border:1px solid var(--line); border-radius:8px; padding:12px 14px; background:var(--soft); }
+  .card b { display:block; font:600 15px/1.4 system-ui, sans-serif; color:var(--accent); margin-bottom:4px; }
+  .card span { font-size:.95rem; }
+  .verdict { border-left:4px solid var(--accent); padding:8px 14px; background:var(--soft); border-radius:0 8px 8px 0; }
+  pre { background:var(--soft); padding:12px 14px; border-radius:8px; overflow-x:auto; font-size:.85rem; line-height:1.45; }
+  footer { margin-top:56px; padding:24px 16px 48px; border-top:1px solid var(--line); color:var(--muted); font-size:.9rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Soft Temporal Kernels and Hybrid Lexical Seeding for Graph Retrieval in Time-Sensitive Financial QA</h1>
+  <p class="sub">Shashvath M · M.Tech, Amrita School of Computing, Coimbatore · supervised by Dr. Ramraj T · 2026</p>
+  <nav>
+    <a href="https://github.com/Shashvath11/Soft-Temporal-Kernel-Graph-Retrieval">Code on GitHub</a>
+    <a href="assets/paper_ieee.pdf">Paper (IEEE, PDF)</a>
+    <a href="assets/paper_extended.pdf">Extended paper (PDF)</a>
+    <a href="#results">Results</a>
+    <a href="#proof">Proof of implementation</a>
+  </nav>
+</header>
+
+<main>
+<h2>Overview</h2>
+<p>Questions about company results always name a period: <em>"What was EOG Resources' free cash flow in 2021-Q4?"</em> Temporal graph retrieval answers them by storing every extracted fact with a timestamp and keeping only the facts dated inside the asked period. This project asks whether that strict 0/1 rule can be replaced by a soft, question-aware time weight, and tests the idea under a protocol fixed before the test set was run.</p>
+
+<div class="cards">
+  <div class="card"><b>96 transcripts</b><span>6 companies of the ECT-QA earnings-call benchmark, 2020–2023</span></div>
+  <div class="card"><b>37 dev / 152 test</b><span>questions; settings locked on dev, test run once</span></div>
+  <div class="card"><b>36 of 37</b><span>dev questions retrieve the same evidence as the released baseline code</span></div>
+  <div class="card"><b>13 test runs</b><span>7 methods + 6 noise settings, 152 answers each, 0 errors</span></div>
+</div>
+
+<h2>Problem</h2>
+<p>The baseline method (<a href="https://arxiv.org/abs/2510.13590">TG-RAG</a>) uses a hard filter, and its timestamps are written by a language model while the graph is built. In our graph, <strong>832 of 8,408 stored facts (9.9%)</strong> carry a timestamp that is not even a valid calendar form, such as "2023 QQ3", "Q1 2023" or "LAST YEAR". A fact from the neighbouring quarter is also dropped even when nothing from the exact quarter exists. In one development question, none of the 60 most similar candidates carried the asked quarter, so the baseline kept no evidence at all and the model invented three numbers.</p>
+
+<h2>Method</h2>
+<p>We measure the distance <i>d<sub>H</sub></i> between a fact's timestamp and the asked period in a year → quarter → month → day tree: zero inside the period, two steps to a neighbouring quarter of the same year, four across a year boundary. The fact's weight is</p>
+<div class="eq">κ(τ) = max<sub>t ∈ T<sub>q</sub></sub> exp(−λ · d<sub>H</sub>(τ, t)),&nbsp;&nbsp; keep the fact if κ(τ) ≥ 0.05,&nbsp;&nbsp; λ = 1</div>
+<p>As λ → ∞ the weight becomes the original 0/1 filter, so the baseline is a special case. The weight is used in three places:</p>
+<ul>
+  <li><strong>Seeding:</strong> each entity's restart weight in personalized PageRank is the largest κ of its candidate facts.</li>
+  <li><strong>The walk</strong> (variant B12): edge weights follow κ, compared against a question-independent decay in the style of DyG-RAG (B1QI).</li>
+  <li><strong>Evidence scoring:</strong> each fact adds κ · [π(u) + π(v)] to its source chunk's score.</li>
+</ul>
+<p>A supporting variant fuses BM25 and dense rankings per asked period with Reciprocal Rank Fusion. A robustness test shifts 10–30% of stored timestamps by one quarter, using a deterministic hash so every method sees the same noise.</p>
+
+<figure>
+  <img class="fig" src="assets/architecture.png" alt="System architecture: offline graph building, online retrieval with the soft kernel in seeding, walk and scoring, and evaluation" loading="lazy">
+  <figcaption>Architecture. Grey: the baseline's released code, unchanged. Blue: our extension, swapped in at run time, so only retrieval differs between methods.</figcaption>
+</figure>
+
+<h2 id="results">Results</h2>
+<p>152 test questions (116 answerable, 36 unanswerable). Correct is the score from an element-level LLM judge; Δ comes from a paired bootstrap against the reproduced baseline (1,000 resamples).</p>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>Method</th><th>Correct (all)</th><th>Answerable</th><th>Unanswerable</th><th>Δ all [95% CI]</th></tr></thead>
+  <tbody>
+    <tr><td>TG-RAG, reproduced (hard filter)</td><td>0.599</td><td>0.540</td><td>0.792</td><td>–</td></tr>
+    <tr><td>Naive RAG</td><td>0.548</td><td>0.426</td><td>0.944</td><td>−0.051 [−0.126, +0.025]</td></tr>
+    <tr class="ours"><td>Soft kernel, λ = 1 (B1)</td><td>0.603</td><td>0.554</td><td>0.764</td><td>+0.004 [−0.049, +0.059]</td></tr>
+    <tr><td>Soft kernel + walk (B12)</td><td>0.605</td><td>0.555</td><td>0.764</td><td>+0.005 [−0.050, +0.069]</td></tr>
+    <tr><td>Question-independent decay (B1QI)</td><td>0.605</td><td>0.547</td><td>0.792</td><td>+0.006 [−0.049, +0.064]</td></tr>
+    <tr><td>Hybrid seeding, hard filter (C)</td><td>0.561</td><td>0.468</td><td>0.861</td><td>−0.038 [−0.094, +0.020]</td></tr>
+    <tr><td>B12 + hybrid seeding (BC)</td><td>0.626</td><td>0.522</td><td>0.958</td><td>+0.026 [−0.039, +0.094]</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="verdict"><strong>The main claim is not supported:</strong> the soft kernel ties with the baseline on held-out questions. It changes the retrieved evidence on 110 of 116 answerable questions, helping multi-period questions and hurting single-period, multi-company ones, and the two effects cancel out. Question-aware decay was no better than question-independent decay.</p>
+
+<h3>Robustness to wrong timestamps</h3>
+<figure>
+  <img class="fig" src="assets/robustness_test.png" alt="Correct as the share of shifted timestamps grows: the baseline declines, the soft kernel does not" loading="lazy">
+  <figcaption>As stored timestamps get noisier, the baseline declines (0.599 → 0.566) and the soft kernel does not (0.627 at 30%). At 30% the gap is +0.061 [+0.005, +0.120]: significant on its own, but one of six robustness tests, and not significant after a Bonferroni correction. We report it as a trend.</figcaption>
+</figure>
+
+<h3>Where the methods differ</h3>
+<figure>
+  <img class="fig" src="assets/per_type_test.png" alt="Correct by question type for the baseline and the soft kernel" loading="lazy">
+  <figcaption>By question type (exploratory). The soft kernel gains on multi-time questions (0.522 → 0.596) and loses on single-time, multi-company questions (0.697 → 0.516).</figcaption>
+</figure>
+
+<h3>Choosing λ on the development set</h3>
+<figure>
+  <img class="fig" src="assets/lambda_sweep_dev.png" alt="Development-set sweep of lambda" loading="lazy">
+  <figcaption>On dev, λ = 1 looked best (+0.077 over the baseline), but with 37 questions the interval was wide ([−0.050, +0.208]). It was locked by a rule set in advance; the test set then showed no gain.</figcaption>
+</figure>
+
+<h2 id="proof">Proof of implementation</h2>
+<ul>
+  <li><strong>Verified baseline:</strong> our re-implementation selects the same chunks as the released code on 36 of 37 dev questions, and the kernel with λ = 1000 scores 0.447 against 0.445 for the baseline.</li>
+  <li><strong>Complete runs:</strong> all 13 pre-registered test runs finished with 152 answers each and no errors, giving 1,976 judged answers.</li>
+  <li><strong>Tests:</strong> 24 unit tests pass, including one that checks our baseline returns exactly the base method's chunks on a synthetic graph.</li>
+  <li><strong>Traceable results:</strong> every number in the tables has its exact command in <a href="https://github.com/Shashvath11/Soft-Temporal-Kernel-Graph-Retrieval/blob/main/results/SUMMARY.md">results/SUMMARY.md</a>.</li>
+</ul>
+<h3>Demo output (dev question base-6, recorded)</h3>
+<pre>Periods read from the question: "2021-Q4"
+   stored date    sim    TG-RAG     soft kappa
+   2022-Q1      0.800    0 DROP   0.0183 DROP
+   2021-Q3      0.799    0 DROP       0.1353
+   2021-Q1      0.788    0 DROP       0.1353
+   2021-Q2      0.783    0 DROP       0.1353
+   2020         0.778    0 DROP   0.0498 DROP
+Facts kept as seeds: TG-RAG 0 of 60, soft kernel 13 of 60
+Answer, TG-RAG:      three invented figures (judge Correct 0.00)
+Answer, soft kernel: "2021-Q4: $2 billion", other quarters not available (judge Correct 0.33)</pre>
+
+<h2>Reproduce</h2>
+<pre>git clone https://github.com/Shashvath11/Soft-Temporal-Kernel-Graph-Retrieval.git
+git clone https://github.com/hanjiale/Temporal-GraphRAG.git third_party/TG-RAG
+pip install -r requirements.txt
+python -m pytest -q tests
+python scripts/run_ectqa.py --working_dir graph_subset --questions ect-qa/subset/test.jsonl --variant B1 --lam 1 --out runs/test_B1_lam1.jsonl</pre>
+<p>Full instructions are in the <a href="https://github.com/Shashvath11/Soft-Temporal-Kernel-Graph-Retrieval#installation">README</a>.</p>
+</main>
+
+<footer>
+  Built on TG-RAG (Han et al., arXiv:2510.13590) and the ECT-QA benchmark, which are third-party works under their own terms. Code in this repository: MIT License.
+</footer>
+</body>
+</html>

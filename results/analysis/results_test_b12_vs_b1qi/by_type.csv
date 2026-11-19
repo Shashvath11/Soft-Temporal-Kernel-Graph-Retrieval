@@ -1,0 +1,17 @@
+split,group,run,n,correct,incorrect
+question_type,multi-time query,B12_lam1,62,0.6222402597402598,0.357195224130708
+question_type,multi-time query,B1QI_lam1_alpha1,62,0.6171082949308756,0.35950460829493086
+question_type,relative-time query,B12_lam1,20,0.49309523809523814,0.4658333333333333
+question_type,relative-time query,B1QI_lam1_alpha1,20,0.5458333333333333,0.41488095238095235
+question_type,single-time query|multi-companies,B12_lam1,33,0.5404040404040403,0.297979797979798
+question_type,single-time query|multi-companies,B1QI_lam1_alpha1,33,0.5479797979797979,0.28383838383838383
+question_type,single-time query|multi-keywords,B12_lam1,37,0.6933075933075933,0.2819176319176319
+question_type,single-time query|multi-keywords,B1QI_lam1_alpha1,37,0.6672779922779922,0.29842342342342343
+reasoning_type,comparison,B12_lam1,46,0.40217391304347827,0.5307971014492754
+reasoning_type,comparison,B1QI_lam1_alpha1,46,0.41775362318840575,0.5217391304347826
+reasoning_type,enumeration,B12_lam1,70,0.6560930735930737,0.2687198515769944
+reasoning_type,enumeration,B1QI_lam1_alpha1,70,0.631904761904762,0.2785034013605442
+reasoning_type,unanswerable|nonfact,B12_lam1,4,0.625,0.375
+reasoning_type,unanswerable|nonfact,B1QI_lam1_alpha1,4,0.875,0.125
+reasoning_type,unanswerable|out-of-scope,B12_lam1,32,0.78125,0.21875
+reasoning_type,unanswerable|out-of-scope,B1QI_lam1_alpha1,32,0.78125,0.21875

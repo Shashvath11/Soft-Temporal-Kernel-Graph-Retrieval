@@ -1,0 +1,73 @@
+% Extended version: full formulation, implementation detail, all results and limitations.
+% Compile: pdflatex paper_extended; bibtex paper_extended; pdflatex paper_extended; pdflatex paper_extended
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{url}
+\newif\ifextended\extendedtrue
+\setlength{\emergencystretch}{3em}
+\usepackage[hidelinks]{hyperref}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\thesection.\Alph{subsection}}
+\hypersetup{pdftitle={Soft Temporal Kernels for Graph Retrieval in Time-Sensitive Financial QA (extended version)}, pdfauthor={Shashvath M}}
+
+\title{Soft Temporal Kernels for Graph Retrieval in Time-Sensitive Financial Question Answering: A Pre-registered Evaluation\\[4pt] \large Extended version}
+\author{Shashvath M \quad and \quad Ramraj T\\[2pt]
+\small Department of Computer Science and Engineering, Amrita School of Computing\\
+\small Amrita Vishwa Vidyapeetham, Coimbatore, India}
+\date{November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent Temporal graph retrieval-augmented generation answers time-sensitive questions by keeping only facts whose timestamp lies inside the period a question asks about. The timestamps are written by a language model while the graph is built, so the 0/1 rule can discard useful evidence: in our graph, 9.9\% of stored facts carry a timestamp that is not even a valid calendar date. We replace the rule with a soft temporal kernel $\kappa = \exp(-\lambda d)$, where $d$ is the distance between a fact's timestamp and the asked period in a year--quarter--month--day tree, so that the original rule is the limit $\lambda \to \infty$. The kernel enters seed selection, the personalized PageRank walk and evidence scoring. We compare it with a question-independent decay and with time-partitioned hybrid keyword and dense seeding, and test it under controlled timestamp noise. All settings were fixed on a development set and the comparisons were pre-registered. On 152 test questions from six companies of the ECT-QA earnings-call benchmark, the kernel did not beat the verified baseline (Correct 0.603 vs 0.599; $\Delta = +0.004$, 95\% CI $[-0.049, 0.059]$). It changes the evidence for 110 of 116 answerable questions, helping multi-period questions and hurting single-period, multi-company ones. With 30\% of timestamps shifted it scored 0.627 vs 0.566, a trend that does not survive correction for multiple tests. This extended version adds the retrieval algorithm, the noise protocol in detail, the implementation and tests, all development and secondary results, a per-question breakdown, a case study and a discussion of threats to validity.
+
+\medskip\noindent\textbf{Keywords:} retrieval-augmented generation; temporal knowledge graph; time-sensitive question answering; financial question answering; robustness
+\end{abstract}
+
+\input{sections/intro}
+\input{sections/related}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/architecture.pdf}
+  \caption{System architecture. Grey: the base system's released code, unchanged. Blue: our extension, swapped in at run time. The soft kernel feeds seeding, the walk and evidence scoring; noise injection changes stored timestamps before the kernel reads them.}
+  \label{fig:arch}
+\end{figure}
+
+\input{sections/method}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.9\textwidth]{figures/workflow.pdf}
+  \caption{Workflow. Settings were locked on the development set before the test set was run once.}
+  \label{fig:workflow}
+\end{figure}
+
+\input{sections/experiments}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.9\textwidth]{figures/lambda_sweep_dev.pdf}
+  \caption{Development set: Correct of B1 for each $\lambda$, all questions and answerable only; dashed line = reproduced baseline.}
+  \label{fig:sweep}
+\end{figure}
+
+\input{sections/results}
+\input{sections/extended_extra}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\bibliographystyle{IEEEtranN}
+\bibliography{references}
+\end{document}

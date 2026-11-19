@@ -1,0 +1,67 @@
+% IEEE conference version. Compile: pdflatex paper_ieee; bibtex paper_ieee; pdflatex paper_ieee; pdflatex paper_ieee
+\documentclass[conference]{IEEEtran}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\newif\ifextended\extendedfalse
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Soft Temporal Kernels for Graph Retrieval in Time-Sensitive Financial QA}, pdfauthor={Shashvath M}}
+
+\begin{document}
+\title{Soft Temporal Kernels for Graph Retrieval in Time-Sensitive Financial Question Answering: A Pre-registered Evaluation}
+
+\author{\IEEEauthorblockN{Shashvath M and Ramraj T}
+\IEEEauthorblockA{Department of Computer Science and Engineering, Amrita School of Computing\\
+Amrita Vishwa Vidyapeetham, Coimbatore, India}}
+
+\maketitle
+
+\begin{abstract}
+Temporal graph retrieval-augmented generation answers time-sensitive questions by keeping only facts whose timestamp lies inside the period a question asks about. The timestamps are written by a language model while the graph is built, so the 0/1 rule can discard useful evidence: in our graph, 9.9\% of stored facts carry a timestamp that is not even a valid calendar date. We replace the rule with a soft temporal kernel $\kappa = \exp(-\lambda d)$, where $d$ is the distance between a fact's timestamp and the asked period in a year--quarter--month--day tree, so that the original rule is the limit $\lambda \to \infty$. The kernel enters seed selection, the personalized PageRank walk and evidence scoring. We compare it with a question-independent decay and with time-partitioned hybrid keyword and dense seeding, and test it under controlled timestamp noise. All settings were fixed on a development set and the comparisons were pre-registered. On 152 test questions from six companies of the ECT-QA earnings-call benchmark, the kernel did not beat the verified baseline (Correct 0.603 vs 0.599; $\Delta = +0.004$, 95\% CI $[-0.049, 0.059]$). It changes the evidence for 110 of 116 answerable questions, helping multi-period questions and hurting single-period, multi-company ones. With 30\% of timestamps shifted it scored 0.627 vs 0.566, a trend that does not survive correction for multiple tests. We release code, settings and the command behind every number.
+\end{abstract}
+
+\begin{IEEEkeywords}
+retrieval-augmented generation, temporal knowledge graph, time-sensitive question answering, financial question answering, robustness
+\end{IEEEkeywords}
+
+\input{sections/intro}
+\input{sections/related}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.86\textwidth]{figures/architecture.pdf}
+  \caption{System architecture. Grey: the base system's released code, unchanged. Blue: our extension, swapped in at run time. The soft kernel feeds seeding, the walk and evidence scoring; noise injection changes stored timestamps before the kernel reads them.}
+  \label{fig:arch}
+\end{figure*}
+
+\input{sections/method}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/workflow.pdf}
+  \caption{Workflow. Settings were locked on the development set before the test set was run once.}
+  \label{fig:workflow}
+\end{figure}
+
+\input{sections/experiments}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/lambda_sweep_dev.pdf}
+  \caption{Development set: Correct of B1 for each $\lambda$, all questions and answerable only; dashed line = reproduced baseline.}
+  \label{fig:sweep}
+\end{figure}
+
+\input{sections/results}
+\input{sections/extended_extra}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\end{document}

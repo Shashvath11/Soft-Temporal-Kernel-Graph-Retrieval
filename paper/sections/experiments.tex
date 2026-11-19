@@ -1,0 +1,20 @@
+\section{Experimental Setup}
+\textbf{Data.} We use all transcripts of six ECT-QA companies for 2020--2023 (Crocs, EOG Resources, Home Depot, JD.com, Skechers, Yum China): 96 transcripts and 189 questions, split once into 37 development and 152 test questions, stratified by type (seed 42). The test set has 116 answerable and 36 unanswerable questions (32 about periods outside the corpus, 4 about unreported facts). By type it has 62 multi-time, 37 single-time multi-keyword, 33 single-time multi-company and 20 relative-time questions. The subset keeps the model-call budget within USD 10--30.
+
+\textbf{Graph and models.} One graph, shared by all methods, was built with the base pipeline using gemini-2.5-flash-lite: 96 documents, 378 chunks and 8,476 relation records (8,408 dated facts with a description). Embeddings use text-embedding-3-small; reading the question's periods, answering and judging use gpt-4o-mini at temperature 0 with the response cache. All models were reached through one OpenRouter endpoint on a laptop without a GPU.
+
+\textbf{Methods.} The reproduced TG-RAG baseline; the released TG-RAG code (development only, as a check); naive RAG over the same chunks; and the variants B1, B12, B1QI, C and BC (Section~III). All use $k = 20$, 60 candidates and a 12,000-token context.
+
+\textbf{Protocol.} $\lambda$ was chosen on the development set from $\{0.25, 0.5, 1, 2, 4, 1000\}$ by a rule fixed beforehand: take the highest overall Correct, and within 0.03 prefer the larger $\lambda$ or the simpler variant. This gave B1 with $\lambda = 1$. The test comparisons were then pre-registered: the main claim is B1 against the baseline overall and on answerable questions; the secondary comparisons are B12 against B1QI, B12 against B1, and C against the baseline; robustness is B1 against the baseline at each noise rate. Every test configuration was run once (Fig.~\ref{fig:workflow}).
+
+\textbf{Metrics.} A judge lists the factual elements of the gold answer and labels each element in the prediction as correct, refused or incorrect, giving
+\begin{equation}
+  \operatorname{Correct}(q) = \frac{n_{\text{correct}}}{n_{\text{correct}} + n_{\text{refusal}} + n_{\text{incorrect}}}
+  \label{eq:correct}
+\end{equation}
+for answerable questions, and $n_{\text{refused}}/(n_{\text{refused}} + n_{\text{incorrect}})$ for unanswerable ones. The released code has no evaluation script, so the prompts are our own wording of the published protocol. Correct is also reported separately for answerable and unanswerable questions. ROUGE-L and token F1 ($2PR/(P+R)$) are computed on answerable questions. Differences use a paired bootstrap over questions,
+\begin{equation}
+  \Delta = \frac{1}{n} \sum_q \big(S_{\text{ours}}(q) - S_{\text{base}}(q)\big),
+  \label{eq:delta}
+\end{equation}
+with 1,000 resamples (seed 0), the 2.5th/97.5th percentile interval and the one-sided $p = \Pr(\Delta^* \le 0)$. A gain is significant when the interval lies above zero.

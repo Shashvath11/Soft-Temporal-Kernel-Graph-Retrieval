@@ -1,0 +1,40 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# third-party code and data (fetched separately)
+third_party/*
+!third_party/README.md
+ect-qa/
+graph_*/
+runs/
+*.jsonl
+*.jsonl.gz
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+.venv/
+venv/
+
+# LaTeX build files
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

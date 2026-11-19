@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite it as below."
+title: "Soft Temporal Kernels and Hybrid Lexical Seeding for Graph Retrieval in Time-Sensitive Financial QA"
+authors:
+  - family-names: "M"
+    given-names: "Shashvath"
+year: 2026
+url: "https://github.com/Shashvath11/Soft-Temporal-Kernel-Graph-Retrieval"
+license: MIT

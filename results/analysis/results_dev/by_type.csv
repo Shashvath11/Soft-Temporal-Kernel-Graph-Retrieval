@@ -1,0 +1,105 @@
+split,group,run,n,correct,incorrect
+question_type,multi-time query,B12_lam1,15,0.4722222222222222,0.4666666666666667
+question_type,multi-time query,B1QI_lam1_alpha1,15,0.4666666666666667,0.45555555555555555
+question_type,multi-time query,B1_lam0.25,15,0.46111111111111114,0.5166666666666667
+question_type,multi-time query,B1_lam0.5,15,0.31666666666666665,0.6611111111111111
+question_type,multi-time query,B1_lam1,15,0.55,0.40555555555555556
+question_type,multi-time query,B1_lam1000,15,0.40555555555555556,0.43333333333333335
+question_type,multi-time query,B1_lam2,15,0.3511111111111111,0.5188888888888888
+question_type,multi-time query,B1_lam4,15,0.40555555555555556,0.43333333333333335
+question_type,multi-time query,BC_lam1,15,0.3888888888888889,0.5777777777777777
+question_type,multi-time query,C,15,0.4,0.41388888888888886
+question_type,multi-time query,naive,15,0.35,0.6083333333333333
+question_type,multi-time query,original,15,0.3111111111111111,0.5444444444444444
+question_type,multi-time query,tgrag,15,0.3777777777777778,0.4777777777777778
+question_type,relative-time query,B12_lam1,5,0.3466666666666667,0.5066666666666666
+question_type,relative-time query,B1QI_lam1_alpha1,5,0.36,0.48
+question_type,relative-time query,B1_lam0.25,5,0.3,0.4
+question_type,relative-time query,B1_lam0.5,5,0.4,0.48
+question_type,relative-time query,B1_lam1,5,0.4,0.48
+question_type,relative-time query,B1_lam1000,5,0.45,0.4
+question_type,relative-time query,B1_lam2,5,0.47000000000000003,0.44000000000000006
+question_type,relative-time query,B1_lam4,5,0.45,0.4
+question_type,relative-time query,BC_lam1,5,0.30666666666666664,0.5466666666666666
+question_type,relative-time query,C,5,0.35,0.5833333333333333
+question_type,relative-time query,naive,5,0.45,0.23333333333333334
+question_type,relative-time query,original,5,0.45,0.4
+question_type,relative-time query,tgrag,5,0.45,0.4
+question_type,single-time query|multi-companies,B12_lam1,8,0.5520833333333334,0.4479166666666667
+question_type,single-time query|multi-companies,B1QI_lam1_alpha1,8,0.575,0.3625
+question_type,single-time query|multi-companies,B1_lam0.25,8,0.5666666666666667,0.19166666666666665
+question_type,single-time query|multi-companies,B1_lam0.5,8,0.5916666666666667,0.19166666666666665
+question_type,single-time query|multi-companies,B1_lam1,8,0.44166666666666665,0.425
+question_type,single-time query|multi-companies,B1_lam1000,8,0.325,0.61875
+question_type,single-time query|multi-companies,B1_lam2,8,0.4791666666666667,0.5208333333333334
+question_type,single-time query|multi-companies,B1_lam4,8,0.325,0.61875
+question_type,single-time query|multi-companies,BC_lam1,8,0.7291666666666666,0.19791666666666666
+question_type,single-time query|multi-companies,C,8,0.44166666666666665,0.5083333333333333
+question_type,single-time query|multi-companies,naive,8,0.5916666666666667,0.175
+question_type,single-time query|multi-companies,original,8,0.325,0.61875
+question_type,single-time query|multi-companies,tgrag,8,0.325,0.61875
+question_type,single-time query|multi-keywords,B12_lam1,9,0.6784391534391534,0.30304232804232806
+question_type,single-time query|multi-keywords,B1QI_lam1_alpha1,9,0.5895502645502646,0.3919312169312169
+question_type,single-time query|multi-keywords,B1_lam0.25,9,0.6932539682539683,0.26865079365079364
+question_type,single-time query|multi-keywords,B1_lam0.5,9,0.7049382716049383,0.25895061728395063
+question_type,single-time query|multi-keywords,B1_lam1,9,0.6129629629629629,0.3509259259259259
+question_type,single-time query|multi-keywords,B1_lam1000,9,0.6239417989417989,0.35383597883597884
+question_type,single-time query|multi-keywords,B1_lam2,9,0.7072751322751323,0.251984126984127
+question_type,single-time query|multi-keywords,B1_lam4,9,0.660978835978836,0.3167989417989418
+question_type,single-time query|multi-keywords,BC_lam1,9,0.633994708994709,0.35013227513227513
+question_type,single-time query|multi-keywords,C,9,0.7907407407407407,0.15092592592592594
+question_type,single-time query|multi-keywords,naive,9,0.6478395061728395,0.3382716049382716
+question_type,single-time query|multi-keywords,original,9,0.660978835978836,0.3167989417989418
+question_type,single-time query|multi-keywords,tgrag,9,0.660978835978836,0.3167989417989418
+reasoning_type,comparison,B12_lam1,12,0.3194444444444444,0.6805555555555555
+reasoning_type,comparison,B1QI_lam1_alpha1,12,0.3055555555555555,0.6944444444444445
+reasoning_type,comparison,B1_lam0.25,12,0.23611111111111113,0.7638888888888888
+reasoning_type,comparison,B1_lam0.5,12,0.13888888888888887,0.8333333333333334
+reasoning_type,comparison,B1_lam1,12,0.4166666666666667,0.5833333333333334
+reasoning_type,comparison,B1_lam1000,12,0.34027777777777773,0.5833333333333334
+reasoning_type,comparison,B1_lam2,12,0.19444444444444445,0.7777777777777778
+reasoning_type,comparison,B1_lam4,12,0.34027777777777773,0.5833333333333334
+reasoning_type,comparison,BC_lam1,12,0.2222222222222222,0.7777777777777778
+reasoning_type,comparison,C,12,0.34027777777777773,0.611111111111111
+reasoning_type,comparison,naive,12,0.25,0.75
+reasoning_type,comparison,original,12,0.2222222222222222,0.7222222222222222
+reasoning_type,comparison,tgrag,12,0.3055555555555555,0.638888888888889
+reasoning_type,enumeration,B12_lam1,15,0.6337301587301588,0.24515873015873016
+reasoning_type,enumeration,B1QI_lam1_alpha1,15,0.535952380952381,0.2884920634920635
+reasoning_type,enumeration,B1_lam0.25,15,0.557063492063492,0.16896825396825396
+reasoning_type,enumeration,B1_lam0.5,15,0.544074074074074,0.2787037037037037
+reasoning_type,enumeration,B1_lam1,15,0.5533333333333333,0.2694444444444445
+reasoning_type,enumeration,B1_lam1000,15,0.4976984126984127,0.30896825396825395
+reasoning_type,enumeration,B1_lam2,15,0.6321428571428572,0.20563492063492064
+reasoning_type,enumeration,B1_lam4,15,0.5199206349206349,0.28674603174603175
+reasoning_type,enumeration,BC_lam1,15,0.5492857142857143,0.3200793650793651
+reasoning_type,enumeration,C,15,0.48777777777777775,0.28111111111111114
+reasoning_type,enumeration,naive,15,0.40425925925925926,0.3157407407407407
+reasoning_type,enumeration,original,15,0.5199206349206349,0.28674603174603175
+reasoning_type,enumeration,tgrag,15,0.5199206349206349,0.28674603174603175
+reasoning_type,unanswerable|nonfact,B12_lam1,1,0.0,1.0
+reasoning_type,unanswerable|nonfact,B1QI_lam1_alpha1,1,0.0,1.0
+reasoning_type,unanswerable|nonfact,B1_lam0.25,1,0.0,1.0
+reasoning_type,unanswerable|nonfact,B1_lam0.5,1,0.0,1.0
+reasoning_type,unanswerable|nonfact,B1_lam1,1,0.0,1.0
+reasoning_type,unanswerable|nonfact,B1_lam1000,1,0.0,1.0
+reasoning_type,unanswerable|nonfact,B1_lam2,1,0.0,1.0
+reasoning_type,unanswerable|nonfact,B1_lam4,1,0.0,1.0
+reasoning_type,unanswerable|nonfact,BC_lam1,1,0.0,1.0
+reasoning_type,unanswerable|nonfact,C,1,0.0,1.0
+reasoning_type,unanswerable|nonfact,naive,1,0.0,1.0
+reasoning_type,unanswerable|nonfact,original,1,0.0,1.0
+reasoning_type,unanswerable|nonfact,tgrag,1,0.0,1.0
+reasoning_type,unanswerable|out-of-scope,B12_lam1,9,0.6666666666666666,0.3333333333333333
+reasoning_type,unanswerable|out-of-scope,B1QI_lam1_alpha1,9,0.7777777777777778,0.2222222222222222
+reasoning_type,unanswerable|out-of-scope,B1_lam0.25,9,0.8888888888888888,0.1111111111111111
+reasoning_type,unanswerable|out-of-scope,B1_lam0.5,9,0.8888888888888888,0.1111111111111111
+reasoning_type,unanswerable|out-of-scope,B1_lam1,9,0.6666666666666666,0.3333333333333333
+reasoning_type,unanswerable|out-of-scope,B1_lam1000,9,0.5555555555555556,0.4444444444444444
+reasoning_type,unanswerable|out-of-scope,B1_lam2,9,0.6666666666666666,0.3333333333333333
+reasoning_type,unanswerable|out-of-scope,B1_lam4,9,0.5555555555555556,0.4444444444444444
+reasoning_type,unanswerable|out-of-scope,BC_lam1,9,0.8888888888888888,0.1111111111111111
+reasoning_type,unanswerable|out-of-scope,C,9,0.7777777777777778,0.2222222222222222
+reasoning_type,unanswerable|out-of-scope,naive,9,1.0,0.0
+reasoning_type,unanswerable|out-of-scope,original,9,0.5555555555555556,0.4444444444444444
+reasoning_type,unanswerable|out-of-scope,tgrag,9,0.5555555555555556,0.4444444444444444

@@ -1,0 +1,17 @@
+split,group,run,n,correct,incorrect
+question_type,multi-time query,tgrag_noise0.3,62,0.5556067588325653,0.3962557603686636
+question_type,multi-time query,B1_lam1_noise0.3,62,0.6406490015360983,0.3390552995391705
+question_type,relative-time query,tgrag_noise0.3,20,0.5458333333333333,0.4111111111111111
+question_type,relative-time query,B1_lam1_noise0.3,20,0.6875,0.25416666666666665
+question_type,single-time query|multi-companies,tgrag_noise0.3,33,0.5626262626262626,0.3328282828282828
+question_type,single-time query|multi-companies,B1_lam1_noise0.3,33,0.48989898989898994,0.3136363636363636
+question_type,single-time query|multi-keywords,tgrag_noise0.3,37,0.5971685971685972,0.31013513513513513
+question_type,single-time query|multi-keywords,B1_lam1_noise0.3,37,0.6947554697554698,0.29076576576576574
+reasoning_type,comparison,tgrag_noise0.3,46,0.3641304347826087,0.5778985507246377
+reasoning_type,comparison,B1_lam1_noise0.3,46,0.5047101449275362,0.427536231884058
+reasoning_type,enumeration,tgrag_noise0.3,70,0.6325170068027212,0.2523582766439909
+reasoning_type,enumeration,B1_lam1_noise0.3,70,0.637517006802721,0.2720918367346939
+reasoning_type,unanswerable|nonfact,tgrag_noise0.3,4,0.5,0.5
+reasoning_type,unanswerable|nonfact,B1_lam1_noise0.3,4,0.375,0.625
+reasoning_type,unanswerable|out-of-scope,tgrag_noise0.3,32,0.71875,0.28125
+reasoning_type,unanswerable|out-of-scope,B1_lam1_noise0.3,32,0.8125,0.1875

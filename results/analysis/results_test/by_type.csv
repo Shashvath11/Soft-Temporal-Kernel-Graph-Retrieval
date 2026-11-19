@@ -1,0 +1,57 @@
+split,group,run,n,correct,incorrect
+question_type,multi-time query,tgrag,62,0.5217829213796956,0.40683738304706046
+question_type,multi-time query,naive,62,0.48317972350230415,0.4990399385560676
+question_type,multi-time query,B1_lam1,62,0.5956221198156683,0.38421658986175117
+question_type,multi-time query,B12_lam1,62,0.6222402597402598,0.357195224130708
+question_type,multi-time query,B1QI_lam1_alpha1,62,0.6171082949308756,0.35950460829493086
+question_type,multi-time query,C,62,0.5136765116603826,0.41335183633570727
+question_type,multi-time query,BC_lam1,62,0.6052227342549924,0.3709677419354839
+question_type,relative-time query,tgrag,20,0.5900000000000001,0.36083333333333334
+question_type,relative-time query,naive,20,0.6660714285714285,0.3059523809523809
+question_type,relative-time query,B1_lam1,20,0.5333333333333333,0.4541666666666667
+question_type,relative-time query,B12_lam1,20,0.49309523809523814,0.4658333333333333
+question_type,relative-time query,B1QI_lam1_alpha1,20,0.5458333333333333,0.41488095238095235
+question_type,relative-time query,C,20,0.3625,0.5483333333333333
+question_type,relative-time query,BC_lam1,20,0.5145833333333333,0.4458333333333333
+question_type,single-time query|multi-companies,tgrag,33,0.696969696969697,0.25252525252525254
+question_type,single-time query|multi-companies,naive,33,0.5075757575757576,0.13636363636363635
+question_type,single-time query|multi-companies,B1_lam1,33,0.5161616161616162,0.3328282828282828
+question_type,single-time query|multi-companies,B12_lam1,33,0.5404040404040403,0.297979797979798
+question_type,single-time query|multi-companies,B1QI_lam1_alpha1,33,0.5479797979797979,0.28383838383838383
+question_type,single-time query|multi-companies,C,33,0.7191919191919193,0.24949494949494946
+question_type,single-time query|multi-companies,BC_lam1,33,0.6313131313131313,0.26515151515151514
+question_type,single-time query|multi-keywords,tgrag,37,0.6470398970398971,0.2568211068211068
+question_type,single-time query|multi-keywords,naive,37,0.6306306306306306,0.3547297297297297
+question_type,single-time query|multi-keywords,B1_lam1,37,0.7320999570999571,0.2260832260832261
+question_type,single-time query|multi-keywords,B12_lam1,37,0.6933075933075933,0.2819176319176319
+question_type,single-time query|multi-keywords,B1QI_lam1_alpha1,37,0.6672779922779922,0.29842342342342343
+question_type,single-time query|multi-keywords,C,37,0.6074538824538824,0.30198412698412697
+question_type,single-time query|multi-keywords,BC_lam1,37,0.71496138996139,0.2322822822822823
+reasoning_type,comparison,tgrag,46,0.3786231884057971,0.5634057971014493
+reasoning_type,comparison,naive,46,0.4003623188405797,0.43478260869565216
+reasoning_type,comparison,B1_lam1,46,0.4032608695652174,0.5380434782608695
+reasoning_type,comparison,B12_lam1,46,0.40217391304347827,0.5307971014492754
+reasoning_type,comparison,B1QI_lam1_alpha1,46,0.41775362318840575,0.5217391304347826
+reasoning_type,comparison,C,46,0.3115942028985507,0.6539855072463768
+reasoning_type,comparison,BC_lam1,46,0.31521739130434784,0.6340579710144928
+reasoning_type,enumeration,tgrag,70,0.645347866419295,0.2408518862090291
+reasoning_type,enumeration,naive,70,0.4420748299319728,0.466921768707483
+reasoning_type,enumeration,B1_lam1,70,0.6523752834467119,0.27147392290249434
+reasoning_type,enumeration,B12_lam1,70,0.6560930735930737,0.2687198515769944
+reasoning_type,enumeration,B1QI_lam1_alpha1,70,0.631904761904762,0.2785034013605442
+reasoning_type,enumeration,C,70,0.571053391053391,0.2988270459699031
+reasoning_type,enumeration,BC_lam1,70,0.6586054421768708,0.26563492063492067
+reasoning_type,unanswerable|nonfact,tgrag,4,0.875,0.125
+reasoning_type,unanswerable|nonfact,naive,4,1.0,0.0
+reasoning_type,unanswerable|nonfact,B1_lam1,4,0.625,0.375
+reasoning_type,unanswerable|nonfact,B12_lam1,4,0.625,0.375
+reasoning_type,unanswerable|nonfact,B1QI_lam1_alpha1,4,0.875,0.125
+reasoning_type,unanswerable|nonfact,C,4,0.75,0.25
+reasoning_type,unanswerable|nonfact,BC_lam1,4,0.875,0.125
+reasoning_type,unanswerable|out-of-scope,tgrag,32,0.78125,0.21875
+reasoning_type,unanswerable|out-of-scope,naive,32,0.9375,0.0625
+reasoning_type,unanswerable|out-of-scope,B1_lam1,32,0.78125,0.21875
+reasoning_type,unanswerable|out-of-scope,B12_lam1,32,0.78125,0.21875
+reasoning_type,unanswerable|out-of-scope,B1QI_lam1_alpha1,32,0.78125,0.21875
+reasoning_type,unanswerable|out-of-scope,C,32,0.875,0.125
+reasoning_type,unanswerable|out-of-scope,BC_lam1,32,0.96875,0.03125

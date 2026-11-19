@@ -1,0 +1,73 @@
+\section{Method}
+\subsection{Setting and baseline}
+The graph $G = (V, E)$ has entity nodes; an edge can hold several facts $f = (u_f, v_f, \tau_f, c_f)$ with two entities, a timestamp and the source chunk $c_f$. Timestamps take one of four forms (YYYY, YYYY-QN, YYYY-MM, YYYY-MM-DD) and form a tree in which quarters lie below years, months below quarters and days below months; $p(\tau)$ is the path of $\tau$ from the root. A question $q$ names periods $T_q$, read by the answering model. Retrieval selects chunks $C_q$ under a token budget $B$:
+\begin{equation}
+  C_q = \operatorname{top\text{-}}k_{\,c}\; S(c) \quad \text{s.t.} \quad \textstyle\sum_{c \in C_q} |c| \le B,
+  \label{eq:select}
+\end{equation}
+with $k = 20$ and $B = 12{,}000$ tokens. TG-RAG's decision for a fact is the 0/1 filter
+\begin{equation}
+  h(\tau) = \mathbf{1}\!\left[\tau \in \operatorname{desc}(T_q)\right],
+  \label{eq:hard}
+\end{equation}
+where $\operatorname{desc}(T_q)$ contains the asked periods and their sub-periods. Its retrieval (i) takes the $3k = 60$ relations most similar to $q$, (ii) keeps those with $h = 1$ as seeds, (iii) runs PPR from the seed entities with damping 0.85 and keeps the top $2k = 40$ entities, (iv) scores chunks from facts on edges between kept entities, and (v) packs the best chunks into the budget.
+
+\subsection{Soft temporal kernel (N1)}
+The tree distance between a stored timestamp $\tau$ and an asked period $t$ is
+\begin{equation}
+  d_H(\tau, t) =
+  \begin{cases}
+    0, & \tau \text{ is or lies inside } t,\\
+    |p(\tau)| + |p(t)| - 2\ell, & \text{otherwise,}
+  \end{cases}
+  \label{eq:dist}
+\end{equation}
+where $\ell = |\operatorname{lcp}(p(\tau), p(t))|$ is the length of the longest common prefix of the two paths, and different years meet at a virtual root. Thus 2023-Q1 and 2023-Q2 are 2 apart, 2022-Q4 and 2023-Q1 are 4 apart, and a year-level fact is 1 from a quarter of the same year. The kernel is
+\begin{equation}
+  \kappa(\tau) = \max_{t \in T_q} \exp\big(-\lambda\, d_H(\tau, t)\big),
+  \label{eq:kappa}
+\end{equation}
+and a fact is kept only if $\kappa(\tau_f) \ge \kappa_{\min} = 0.05$. Unparseable timestamps get $\kappa = 0$, and questions without periods give every fact weight 1, both as in TG-RAG. Since $\exp(-\lambda d) \to \mathbf{1}[d = 0]$,
+\begin{equation}
+  \lim_{\lambda \to \infty} \kappa(\tau) = h(\tau),
+  \label{eq:limit}
+\end{equation}
+so TG-RAG is a special case. With $\lambda = 1$, facts at distance 0, 1, 2 get 1, 0.368 and 0.135; distance 3 gives $e^{-3} = 0.0498 < \kappa_{\min}$ and is dropped.
+
+\subsection{Kernel throughout retrieval (N2)}
+\textbf{Seeding.} A seed entity's weight is the largest kernel value among the kept candidate facts $R_q$ that touch it,
+\begin{equation}
+  w(v) = \max_{f \in R_q:\; v \in f,\; \kappa(\tau_f) \ge \kappa_{\min}} \kappa(\tau_f).
+  \label{eq:seed}
+\end{equation}
+\textbf{Walk.} PPR restarts in proportion to the seed weights (TG-RAG restarts uniformly):
+\begin{equation}
+  \bm{\pi} = \alpha P^{\top} \bm{\pi} + (1 - \alpha)\, \mathbf{p}, \quad p(v) = \frac{w(v)}{\sum_u w(u)}, \quad \alpha = 0.85,
+  \label{eq:ppr}
+\end{equation}
+with $P_{uv} \propto \omega(u, v)$. Variant B1 keeps $\omega = 1$. Variant B12 sets $\omega(u, v) = \max_{f \text{ on } (u,v)} \kappa(\tau_f)$, zeroed below $\kappa_{\min}$, with untimed edges at 1.
+
+\textbf{Scoring.} For edges between the top entities, each kept fact adds its weight times the endpoint scores to its chunk:
+\begin{equation}
+  S(c) = \prod_{\gamma \in \Gamma_c} (1 + \gamma) \sum_{f:\, c_f = c} \kappa(\tau_f)\,\big[\pi(u_f) + \pi(v_f)\big],
+  \label{eq:score}
+\end{equation}
+where $\Gamma_c$ are the similarities of seed relations on the contributing edges. Under the hard filter, $\kappa$ in (\ref{eq:score}) is $h$.
+
+\textbf{Question-independent ablation (B1QI).} Following the idea of time-decayed links \cite{sun2025dygrag}, a fact's coherence with the facts $N(f)$ sharing one of its entities is
+\begin{equation}
+  \operatorname{coh}(f) = \frac{1}{|N(f)|} \sum_{f' \in N(f)} e^{-\alpha d_H(\tau_f, \tau_{f'})},
+  \label{eq:coh}
+\end{equation}
+with $\alpha = 1$, and the walk weight of an edge is the largest coherence of its facts, $\omega(u, v) = \max_{f \text{ on } (u,v)} \operatorname{coh}(f)$. B1QI equals B12 except for these walk weights, which ignore the question.
+
+\subsection{Hybrid seeding (S1) and noise protocol (N3)}
+In variants C (hard filter) and BC (B12), candidates are chosen per asked period: the relations admitted for that period are ranked by dense similarity and by BM25 and fused by
+\begin{equation}
+  \operatorname{RRF}(r) = \sum_{i} \frac{1}{k + \operatorname{rank}_i(r)}, \qquad k = 60,
+  \label{eq:rrf}
+\end{equation}
+where $i$ runs over the dense and the BM25 ranking, each period contributing $\lceil 60/|T_q| \rceil$ candidates. For robustness, a share $\rho \in \{0.1, 0.2, 0.3\}$ of stored timestamps is moved by one quarter (one year for year-level stamps). The decision and the direction come from a SHA-256 hash of (seed 13, entity pair, timestamp), so the same fact is corrupted identically for every method and the comparison stays paired.
+
+\subsection{Implementation}
+The base system's code is left untouched; our package replaces its retrieval function at run time, so all methods share the graph, question parser, answer prompt and models (Fig.~\ref{fig:arch}). The retriever records every candidate fact with its timestamp, weight and decision. Twenty-four unit tests check the distances, the kernel limit, noise determinism, the question-independence of B1QI, and that the re-implemented baseline returns exactly the base function's chunks on a synthetic graph.

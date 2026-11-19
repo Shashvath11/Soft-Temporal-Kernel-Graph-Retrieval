@@ -1,0 +1,26 @@
+# Settings used for every reported result. Chosen on the 37 dev questions, then locked;
+# nothing was tuned on the 152 test questions.
+kernel:
+  lambda: 1.0          # strength of the soft temporal kernel; lambda -> infinity = TG-RAG's hard filter
+  kappa_min: 0.05      # facts with a weight below this are dropped (keeps facts up to 2 tree steps away)
+retrieval:
+  top_k: 20            # chunks sent to the answering model
+  candidate_relations: 60   # 3 x top_k, as in the released TG-RAG code
+  top_entities: 40     # 2 x top_k, kept after personalized PageRank
+  pagerank_damping: 0.85
+  context_tokens: 12000
+  rrf_k: 60            # Reciprocal Rank Fusion constant (variants C and BC)
+  b1qi_alpha: 1.0      # decay rate of the question-independent walk (variant B1QI)
+noise:
+  rates: [0.1, 0.2, 0.3]   # share of stored timestamps shifted by one quarter
+  seed: 13
+models:
+  graph_building: google/gemini-2.5-flash-lite
+  embeddings: openai/text-embedding-3-small
+  answering_and_judging: openai/gpt-4o-mini   # temperature 0, cached
+seeds:
+  data_split: 42
+  bootstrap: 0
+  hand_check_sampling: 42
+evaluation:
+  bootstrap_resamples: 1000
