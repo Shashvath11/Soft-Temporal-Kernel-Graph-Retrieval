@@ -58,9 +58,18 @@ Shifted & Baseline & B1 & $\Delta$ all [95\% CI], $p$ \\
 \subsection{Where the methods differ (exploratory)}
 On the 116 answerable test questions, B1 changes the retrieved context on 110. It is better than the baseline on 35, worse on 28 and tied on 53; the gains ($+12.90$) and losses ($-11.27$) nearly cancel. By type (Fig.~\ref{fig:types}), B1 helps on multi-time questions (0.522 to 0.596) and single-time multi-keyword questions (0.647 to 0.732). It hurts on single-time multi-company questions (0.697 to 0.516; worse on 13 of 22 answerable ones) and on relative-time questions (0.590 to 0.533). A plausible, untested explanation is that neighbouring-quarter facts help to fill multi-period questions but compete for the fixed context with exact-period facts about the other companies. Questions with no seed under the hard filter occurred on only 2 of 116 answerable test questions (3 of 27 on development); B1 scored 0.458 against 0.000 on them.
 
+Fig.~\ref{fig:breakdown} shows how the judged answer elements split. With more evidence passing the soft filter, the kernel variants refuse slightly less than the baseline (0.053--0.060 against 0.070) and give slightly more incorrect elements (0.335--0.344 against 0.331), so the extra answers are about as often wrong as right, which is consistent with the tie in Correct. The difference is not in how much text is retrieved: every graph variant sends between 11,039 and 11,462 context tokens on average, close to the 12,000-token budget.
+
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{figures/per_type_test.pdf}
   \caption{Correct by question type, baseline vs B1 (test set, exploratory).}
   \label{fig:types}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/answer_breakdown_test.pdf}
+  \caption{Share of judged answer elements that are correct, refused or incorrect for each method (test set, all 152 questions).}
+  \label{fig:breakdown}
 \end{figure}
